@@ -1,0 +1,51 @@
+connect '/C=4'
+
+setbaud 115200
+
+fileopen fhandle 'mnist1.txt' 0
+
+timeout = 30
+
+wait '3'
+gettime str1
+
+:loop0
+
+i=0
+:loop
+data=''
+:loop2
+fileread fhandle 1 sin_char
+;messagebox sin_char "character"
+if result goto fclose
+strcompare sin_char '	'
+if result=0 then
+	goto loop3
+else
+	strcompare sin_char '\n'
+	if result=0 then
+		goto loop3
+	endif
+	strconcat data sin_char
+	goto loop2
+endif
+
+:loop3
+str2int val data
+;messagebox val "value"
+send val
+;pause 1
+i=i+1
+if i=784 then
+	goto loop0
+endif
+goto loop
+;pause 1
+
+goto loop
+
+:fclose
+gettime str2
+sprintf2 msg "Start time= %s, End time= %s" str1 str2
+messagebox msg "Done"
+fileclose fhandle
